@@ -68,16 +68,73 @@ void draw() {
   popMatrix();
 }
 
+float oriented(float x1, float x2, float x3, float y1, float y2, float y3) {
+  return (x1 - x3)*(y2 - y3) - (y1 - y3)*(x2 - x3);
+}
+
 // Implement this function to rasterize the triangle.
 // Coordinates are given in the frame system which has a dimension of 2^n
 void triangleRaster() {
   // frame.coordinatesOf converts from world to frame
   // here we convert v1 to illustrate the idea
-  if (debug) {
+  
+  float x1 = frame.coordinatesOf(v1).x();
+  float x2 = frame.coordinatesOf(v2).x();
+  float x3 = frame.coordinatesOf(v3).x();
+  
+  float y1 = frame.coordinatesOf(v1).y();
+  float y2 = frame.coordinatesOf(v2).y();
+  float y3 = frame.coordinatesOf(v3).y();
+  
+  int minx = round(min(x1, x2, x3));
+  int miny = round(min(y1, y2, y3));
+  int maxx = round(max(x1, x2, x3));
+  int maxy = round(max(y1, y2, y3));
+  
+  if (debug) {  
     pushStyle();
-    stroke(255, 255, 0, 125);
-    point(round(frame.coordinatesOf(v1).x()), round(frame.coordinatesOf(v1).y()));
-    popStyle();
+    stroke(255, 255, 0);
+    
+    point(round(x1), round(y1));
+    point(round(x2), round(y2));
+    point(round(x3), round(y3));
+    point(round( (x3+x2+x1)/3), round((y3+y2+y1)/3));
+    
+    //System.out.println(x1 + " | " + y1);
+    
+    /*
+    if( ((x2 - x1)*(y3 - y1) - (y2 - y1)*(x3 - x1)) < 0){
+    Vector tmp = v1;
+      v1 = v2;
+      v2 = tmp;
+    }*/
+    
+    String next = "mayor";
+    
+    if(oriented(x1, x2, x3, y1, y2, y3) < 0){
+      next = "menor";
+    }
+    
+    strokeWeight(0);
+    for(int x = minx; x < maxx; x++){
+      for(int y = miny; y < maxy; y++){
+        float a, b, c;
+        a = oriented(x1, x2, x, y1, y2, y);
+        b = oriented(x2, x3, x, y2, y3, y);
+        c = oriented(x3, x1, x, y3, y1, y);
+        
+        if(next == "mayor"){
+          if(a >= 0 && b >= 0 && c >= 0)
+            rect(x-0.5, y-0.5, 1, 1);
+            
+        } else {
+          if(a < 0 && b < 0 && c < 0)
+            rect(x-0.5, y-0.5, 1, 1);
+        }
+      }
+    }
+  popStyle();
+    
   }
 }
 
