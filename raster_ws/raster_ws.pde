@@ -93,12 +93,18 @@ void triangleRaster() {
   
   if (debug) {  
     pushStyle();
-    stroke(255, 255, 0);
-    
+     
+    stroke(0,255, 0);  
     point(round(x1), round(y1));
+    
+    stroke(0, 0, 255);
     point(round(x2), round(y2));
+    
+    stroke(255, 0, 0); 
     point(round(x3), round(y3));
-    point(round( (x3+x2+x1)/3), round((y3+y2+y1)/3));
+    
+    //stroke(255);
+    //point(round( (x3+x2+x1)/3), round((y3+y2+y1)/3));
     
     //System.out.println(x1 + " | " + y1);
     
@@ -116,21 +122,45 @@ void triangleRaster() {
     }
     
     strokeWeight(0);
+    fill(255,0,255);
+    
+    int antialiasing = 4;
+    
     for(int x = minx; x < maxx; x++){
       for(int y = miny; y < maxy; y++){
-        float a, b, c;
-        a = oriented(x1, x2, x, y1, y2, y);
-        b = oriented(x2, x3, x, y2, y3, y);
-        c = oriented(x3, x1, x, y3, y1, y);
         
-        if(next == "mayor"){
-          if(a >= 0 && b >= 0 && c >= 0)
-            rect(x-0.5, y-0.5, 1, 1);
+        float colors[] = {0, 0, 0};
+        
+        for (float i = 0; i<1; i+=(float)1/antialiasing){
+          for (float j = 0; j<1; j+=(float)1/antialiasing) {
             
-        } else {
-          if(a < 0 && b < 0 && c < 0)
-            rect(x-0.5, y-0.5, 1, 1);
-        }
+            float a, b, c;
+            //Vector p = new Vector(x+i+1/antialiasing/2, y+i+1/antialiasing/2);
+            a = oriented(x1, x2, x+i+1/antialiasing/2, y1, y2, y+i+1/antialiasing/2);
+            b = oriented(x2, x3, x+i+1/antialiasing/2, y2, y3, y+i+1/antialiasing/2);
+            c = oriented(x3, x1, x+i+1/antialiasing/2, y3, y1, y+i+1/antialiasing/2);
+            
+            if(next == "mayor"){
+              if(a >= 0 && b >= 0 && c >= 0){
+                colors[0]+=a*255/(a+b+c)/(Math.pow(antialiasing,2));
+                colors[1]+=b*255/(a+b+c)/(Math.pow(antialiasing,2));
+                colors[2]+=c*255/(a+b+c)/(Math.pow(antialiasing,2));
+                
+                fill(color(round(colors[0]), round(colors[1]), round(colors[2])));
+                rect(x, y, 1, 1);
+              }  
+            } else {
+              if(a < 0 && b < 0 && c < 0){
+                colors[0]+=a*255/(a+b+c)/(Math.pow(antialiasing,2));
+                colors[1]+=b*255/(a+b+c)/(Math.pow(antialiasing,2));
+                colors[2]+=c*255/(a+b+c)/(Math.pow(antialiasing,2));
+                 
+                fill(color(round(colors[0]), round(colors[1]), round(colors[2])));
+                rect(x, y, 1, 1);
+              }
+            }
+          }
+        } 
       }
     }
   popStyle();
