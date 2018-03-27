@@ -68,7 +68,9 @@ void draw() {
   popMatrix();
 }
 
+//orientación  para decidir si un punto está o no el interior de un triaángulo, aplicando la orientación respectiva de un triangulo A1A2A3 
 float oriented(float x1, float x2, float x3, float y1, float y2, float y3) {
+  //formula matématica para saber la orientación respectiva del triángulo.
   return (x1 - x3)*(y2 - y3) - (y1 - y3)*(x2 - x3);
 }
 
@@ -77,85 +79,82 @@ float oriented(float x1, float x2, float x3, float y1, float y2, float y3) {
 void triangleRaster() {
   // frame.coordinatesOf converts from world to frame
   // here we convert v1 to illustrate the idea
-  
+  // coordenadas en la posicion x de cada uno de los tres vectores
   float x1 = frame.coordinatesOf(v1).x();
   float x2 = frame.coordinatesOf(v2).x();
   float x3 = frame.coordinatesOf(v3).x();
-  
+  //coordenadas en la posicion y de cada uno de los tres vectores
   float y1 = frame.coordinatesOf(v1).y();
   float y2 = frame.coordinatesOf(v2).y();
   float y3 = frame.coordinatesOf(v3).y();
-  
+  // el valor minimo de los vertices que se encuentran en la coordenada x
   int minx = round(min(x1, x2, x3));
+  //Valor minimo de los vertices que se encuedntran en la coordenada y
   int miny = round(min(y1, y2, y3));
+  //Valor maximo de los vertices que se encuentran en la coordenada x
   int maxx = round(max(x1, x2, x3));
+  //Valor maximo de los vertices que se encuedntran en la coordenada y
   int maxy = round(max(y1, y2, y3));
   
   if (debug) {  
     pushStyle();
-     
+    //primer punto con color verde  
     stroke(0,255, 0);  
     point(round(x1), round(y1));
-    
+    // segundo punto con color azul
     stroke(0, 0, 255);
     point(round(x2), round(y2));
-    
-    stroke(255, 0, 0); 
-    point(round(x3), round(y3));
-    
+    // tercer punto con color rojo
+    // punto que se encuentra en el medio (baricentro)
     //stroke(255);
     //point(round( (x3+x2+x1)/3), round((y3+y2+y1)/3));
     
-    //System.out.println(x1 + " | " + y1);
-    
-    /*
-    if( ((x2 - x1)*(y3 - y1) - (y2 - y1)*(x3 - x1)) < 0){
-    Vector tmp = v1;
-      v1 = v2;
-      v2 = tmp;
-    }*/
-    
     String next = "mayor";
-    
+    // si el resultado de la oreintacion del triangulo es negativa , la orientacion del triangulo sera negativa
     if(oriented(x1, x2, x3, y1, y2, y3) < 0){
       next = "menor";
     }
-    
+    //Es necesario el strokeWeigh para que el tamaño de cada uno de los rectangulos que dibuja dentro del triángulo corresponda a un cuadrado 
     strokeWeight(0);
     fill(255,0,255);
-    
+    //subdivision del antialiasing 
     int antialiasing = 4;
-    
+    // se eligen los parametros minimos y maximos para recorrer solamente el área necesaria
     for(int x = minx; x < maxx; x++){
       for(int y = miny; y < maxy; y++){
-        
-        float colors[] = {0, 0, 0};
-        
+        //se definen los colores del respectivo triangulo
+        float color1 = 0;
+        float color2 = 0;
+        float color3 = 0;
+        // se recorre el respectivo triangulo
         for (float i = 0; i<1; i+=(float)1/antialiasing){
           for (float j = 0; j<1; j+=(float)1/antialiasing) {
-            
+            //orientacion de cada uno de los puntos con su respectivo antialiasing (subdivisiones correspondientes)
             float a, b, c;
             //Vector p = new Vector(x+i+1/antialiasing/2, y+i+1/antialiasing/2);
             a = oriented(x1, x2, x+i+1/antialiasing/2, y1, y2, y+i+1/antialiasing/2);
             b = oriented(x2, x3, x+i+1/antialiasing/2, y2, y3, y+i+1/antialiasing/2);
             c = oriented(x3, x1, x+i+1/antialiasing/2, y3, y1, y+i+1/antialiasing/2);
-            
+            //En caso de que la orientacion sea mayor , es decir todos los puntos esten orientados en el plano positivo se dibujará el triángulo con los colores  RGB
             if(next == "mayor"){
               if(a >= 0 && b >= 0 && c >= 0){
-                colors[0]+=a*255/(a+b+c)/(Math.pow(antialiasing,2));
-                colors[1]+=b*255/(a+b+c)/(Math.pow(antialiasing,2));
-                colors[2]+=c*255/(a+b+c)/(Math.pow(antialiasing,2));
-                
-                fill(color(round(colors[0]), round(colors[1]), round(colors[2])));
+                //cada punto del triangulo  se subdivide en 16
+                color1+=a*255/(a+b+c)/(Math.pow(antialiasing,2));
+                color2+=b*255/(a+b+c)/(Math.pow(antialiasing,2));
+                color3+=c*255/(a+b+c)/(Math.pow(antialiasing,2));
+                //rellenar cada una de las subdivisiones del triangulo con los colores correspondientes
+                fill(color(round(color1), round(color2), round(color3)));
                 rect(x, y, 1, 1);
               }  
             } else {
+              //En caso contrario se encontrarán en el caso donde todos los puntos estan en la coordenada negativa , igualmente se dibujará el triángulo con los colores RGB
               if(a < 0 && b < 0 && c < 0){
-                colors[0]+=a*255/(a+b+c)/(Math.pow(antialiasing,2));
-                colors[1]+=b*255/(a+b+c)/(Math.pow(antialiasing,2));
-                colors[2]+=c*255/(a+b+c)/(Math.pow(antialiasing,2));
-                 
-                fill(color(round(colors[0]), round(colors[1]), round(colors[2])));
+                //cada punto del tringulo se subdivide en 16
+                color1+=a*255/(a+b+c)/(Math.pow(antialiasing,2));
+                color2+=b*255/(a+b+c)/(Math.pow(antialiasing,2));
+                color3+=c*255/(a+b+c)/(Math.pow(antialiasing,2));
+                //rellena cada una de las subdivisiones del triángulo con los colores correspondientes    
+                fill(color(round(color1), round(color2), round(color3)));
                 rect(x, y, 1, 1);
               }
             }
