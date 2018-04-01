@@ -34,8 +34,9 @@ Para decidir si un punto se encontraba dentro del interior del triangulo fue nec
 
 Dado lo anterior si era mayor que 0 tenia una orientación positiva, en caso contrario la orientación era negativa.
 
-Lo cual generó las siguientes imágenes con aliasing y sin antialiasing:
-
+Lo cual generó las siguientes imágenes con anti-aliasing y sin anti-aliasing:
+- ![Sin antialiasing y sin shading](images/sin_antialiasing.png "Sin antialiasing y sin shading")
+- ![Con antialiasing y con shading](images/antialiasing.png "Con antialiasing y con shading")
  
 Para realizar la técnica de anti-aliasing se tuvo en cuenta que se subdividió cada uno de los pixeles (puntos) en zonas mas pequeñas, y a su vez se tuvo en cuenta que cada región tenía su respectivo color, y en cuanto la técnica de shading se exploró el color correspondiente  de cada uno de los puntos del triangulo en RGB, y a partir de este se observa que cada punto dentro dentro triangulo corresponde a una intesidad de color distinto.
 
