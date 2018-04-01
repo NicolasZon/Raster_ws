@@ -105,6 +105,8 @@ void triangleRaster() {
     stroke(0, 0, 255);
     point(round(x2), round(y2));
     // tercer punto con color rojo
+    stroke(255, 0, 0);
+    point(round(x3), round(y3));
     // punto que se encuentra en el medio (baricentro)
     //stroke(255);
     //point(round( (x3+x2+x1)/3), round((y3+y2+y1)/3));
