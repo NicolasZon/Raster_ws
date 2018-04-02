@@ -38,8 +38,7 @@ Lo cual generó las siguientes imágenes con anti-aliasing y sin anti-aliasing:
 - ![Sin antialiasing y sin shading](images/sin_antialiasing.PNG "Sin antialiasing y sin shading")
 - ![Con antialiasing y con shading](images/antialiasing.PNG "Con antialiasing y con shading")
  
-Para realizar la técnica de anti-aliasing se tuvo en cuenta que se subdividió cada uno de los pixeles (puntos) en zonas mas pequeñas, y a su vez se tuvo en cuenta que cada región tenía su respectivo color, y en cuanto la técnica de shading se exploró el color correspondiente  de cada uno de los puntos del triangulo en RGB, y a partir de este se observa que cada punto dentro dentro triangulo corresponde a una intesidad de color distinto. 
-Se usaron las técnidas de subsampling para antialiasing y coordenadas baricentricas para shading
+Para realizar la técnica de anti-aliasing se tuvo en cuenta que se subdividió cada uno de los pixeles (puntos) en zonas mas pequeñas, y a su vez se analizó que cada región tenía su respectivo color, para ello se utilizó la tecnica de subsampling, y en cuanto la técnica de shading (coordenadas báricentricas)se exploró el color correspondiente  de cada uno de los puntos del triangulo en RGB, dado esto  se observa que cada punto dentro dentro triangulo corresponde a una intesidad de color distinto.
 
 Referencias consultadas:
 
